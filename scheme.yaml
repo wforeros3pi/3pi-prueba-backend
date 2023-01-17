@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: Backend Project
+  description: Boilerplate for backend projects
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/v1
+    description: "Local server"
+tags:
+  - name: healthy
+    description: Service health routes
+paths:
+  /:
+    get:
+      tags:
+        - healthy
+      summary: Root route
+      operationId: health:root
+      description: http://localhost:3000/
+      responses:
+        "2XX":
+          description: result = Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/response"
+  /healthy:
+    get:
+      tags:
+        - healthy
+      summary: Healthy route
+      operationId: health:healthcheck
+      description: http://localhost:3000/healthy
+      responses:
+        "2XX":
+          description: result = Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/response"
+  /readiness:
+    get:
+      tags:
+        - healthy
+      summary: Readiness route
+      operationId: health:readiness
+      description: http://localhost:3000/readiness
+      responses:
+        "2XX":
+          description: result = Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/response"
+
+components:
+  schemas:
+    #HEALTHY SCHEMA
+    healthy:
+      title: Healthy
+      type: object
+      properties:
+        message:
+          type: string
+          example: Service OK 👽
+        environment:
+          type: string
+          example: "development"
+        version:
+          type: string
+          example: "1.0.0"
+    #RESPONSES
+    api_response:
+      title: ApiResponse
+      required:
+        - result
+        - status
+      type: object
+      properties:
+        result:
+          type: object
+          description: Object according to the requested resource
+        status:
+          type: integer
+          description: HTTP code status
+          example: 200
+    api_error:
+      title: ApiError
+      required:
+        - message
+        - code
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message that describes the error
+        code:
+          type: integer
+          description: Code of error
+        metadata:
+          type: object
+          description: More info of error
+  responses:
+    response:
+      $ref: "#/components/schemas/api_response"
+    error:
+      $ref: "#/components/schemas/api_error"
+    404_not_found:
+      $ref: "#/components/schemas/api_error"
